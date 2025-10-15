@@ -18,7 +18,7 @@
     <div>
       <select name="status" class="w-full rounded-lg border p-2.5 text-sm">
         <option value="">Semua status</option>
-        @foreach(['kosong','terpakai','reserved'] as $s)
+        @foreach(['kosong','tersedia','reserved'] as $s)
           <option value="{{ $s }}" {{ request('status')===$s?'selected':'' }}>{{ $s }}</option>
         @endforeach
       </select>

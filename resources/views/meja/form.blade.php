@@ -21,7 +21,7 @@
   <div>
     <label class="block text-sm">Status</label>
     <select name="status" class="mt-1 w-full rounded-lg border p-2.5">
-      @foreach(['kosong','terpakai','reserved'] as $s)
+      @foreach(['kosong','tersedia','reserved'] as $s)
         <option value="{{ $s }}" {{ old('status',$meja->status ?? 'kosong')===$s ? 'selected':'' }}>{{ $s }}</option>
       @endforeach
     </select>

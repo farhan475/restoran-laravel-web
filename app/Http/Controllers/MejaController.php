@@ -12,7 +12,7 @@ class MejaController extends Controller
         $q = request('q');
         $status = request('status');
 
-        $mejas = \App\Models\Meja::query()
+        $mejas = Meja::query()
             ->when($q, fn($qr) => $qr->where('kode', 'like', "%{$q}%"))
             ->when($status, fn($qr) => $qr->where('status', $status))
             ->orderBy('kode')
@@ -46,7 +46,7 @@ class MejaController extends Controller
     {
         $data = $request->validate([
             'kode' => ['required', 'string', 'max:10', 'unique:mejas,kode,' . $meja->id],
-            'status' => ['required', 'in:kosong,terpakai,reserved'],
+            'status' => ['required', 'in:kosong,tersedia,reserved'],
         ]);
         $meja->update($data);
         return redirect()->route('meja.index')->with('ok', 'Meja diperbarui');
