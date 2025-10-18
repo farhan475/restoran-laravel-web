@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   @vite('resources/css/app.css')
   <title>Restoran POS</title>
 </head>
@@ -36,9 +37,8 @@
     @if(session('ok')) <div class="mb-4 rounded-lg bg-green-100 text-green-800 px-4 py-2">{{ session('ok') }}</div> @endif
     @yield('content')
   </main>
+    @stack('scripts')
 
-  <footer class="mx-auto max-w-7xl px-4 pb-6 text-xs text-gray-500">
-    Dibuat dengan Laravel 12 + Tailwind
-  </footer>
+ 
 </body>
 </html>

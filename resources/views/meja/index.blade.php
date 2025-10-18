@@ -18,8 +18,11 @@
     <div>
       <select name="status" class="w-full rounded-lg border p-2.5 text-sm">
         <option value="">Semua status</option>
-        @foreach(['kosong','tersedia','reserved'] as $s)
-          <option value="{{ $s }}" {{ request('status')===$s?'selected':'' }}>{{ $s }}</option>
+        {{-- Menambahkan 'terpakai' ke dalam daftar filter status --}}
+        @foreach(['kosong','tersedia','reserved', 'terpakai'] as $s)
+          <option value="{{ $s }}" {{ request('status') === $s ? 'selected' : '' }}>
+            {{ ucfirst($s) }} {{-- Menggunakan ucfirst agar tampilan lebih rapi --}}
+          </option>
         @endforeach
       </select>
     </div>
@@ -47,9 +50,9 @@
         <tr class="border-t">
           <td class="p-3 font-medium">{{ $m->kode }}</td>
           <td class="p-3">
-  <x-status-badge :status="$m->status" />
-</td>
-
+            {{-- Komponen ini akan menampilkan status secara dinamis, pastikan ia mendukung 'terpakai' --}}
+            <x-status-badge :status="$m->status" />
+          </td>
           <td class="p-3">{{ $m->created_at?->format('d M Y H:i') }}</td>
           <td class="p-3 text-right">
             <a href="{{ route('meja.edit',$m) }}" class="text-blue-600">Edit</a>

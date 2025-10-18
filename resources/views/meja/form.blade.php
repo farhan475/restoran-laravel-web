@@ -21,8 +21,12 @@
   <div>
     <label class="block text-sm">Status</label>
     <select name="status" class="mt-1 w-full rounded-lg border p-2.5">
-      @foreach(['kosong','tersedia','reserved'] as $s)
-        <option value="{{ $s }}" {{ old('status',$meja->status ?? 'kosong')===$s ? 'selected':'' }}>{{ $s }}</option>
+      {{-- Menambahkan 'terpakai' ke dalam daftar pilihan status --}}
+      @foreach(['kosong','tersedia','reserved', 'terpakai'] as $s)
+        {{-- Menggunakan default 'tersedia' untuk meja baru agar sesuai skema DB --}}
+        <option value="{{ $s }}" {{ old('status',$meja->status ?? 'tersedia') === $s ? 'selected' : '' }}>
+          {{ ucfirst($s) }} {{-- Menggunakan ucfirst agar tampilan lebih rapi --}}
+        </option>
       @endforeach
     </select>
     @error('status') <p class="text-red-600 text-sm mt-1">{{ $message }}</p> @enderror

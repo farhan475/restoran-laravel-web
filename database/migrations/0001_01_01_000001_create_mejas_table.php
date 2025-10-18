@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('mejas', function (Blueprint $table) {
             $table->id();
             $table->string('kode')->unique();
-            $table->enum('status', ['kosong', 'tersedia', 'reserved'])->default('tersedia');
+            $table->enum('status', ['kosong', 'tersedia', 'reserved', 'terpakai'])->default('tersedia');
             $table->timestamps();
         });
     }

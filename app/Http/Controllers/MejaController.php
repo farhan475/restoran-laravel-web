@@ -31,7 +31,8 @@ class MejaController extends Controller
     {
         $data = $request->validate([
             'kode' => ['required', 'string', 'max:10', 'unique:mejas,kode'],
-            'status' => ['required', 'in:kosong,terpakai,reserved'],
+            // PERBAIKAN: Menambahkan 'tersedia' dan 'terpakai' ke dalam validasi
+            'status' => ['required', 'in:kosong,tersedia,reserved,terpakai'],
         ]);
         Meja::create($data);
         return redirect()->route('meja.index')->with('ok', 'Meja dibuat');
@@ -46,7 +47,8 @@ class MejaController extends Controller
     {
         $data = $request->validate([
             'kode' => ['required', 'string', 'max:10', 'unique:mejas,kode,' . $meja->id],
-            'status' => ['required', 'in:kosong,tersedia,reserved'],
+            // PERBAIKAN: Menambahkan 'terpakai' ke dalam validasi agar konsisten
+            'status' => ['required', 'in:kosong,tersedia,reserved,terpakai'],
         ]);
         $meja->update($data);
         return redirect()->route('meja.index')->with('ok', 'Meja diperbarui');
