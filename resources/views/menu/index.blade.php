@@ -14,7 +14,6 @@
   </div>
 </div>
 
-{{-- Card untuk Tabel Menu --}}
 <div class="border border-neutral-800 bg-neutral-900/50 rounded-xl shadow-lg">
   <div class="overflow-x-auto">
     <table class="min-w-full text-sm">
@@ -54,7 +53,6 @@
   </div>
 </div>
 
-{{-- Paginasi --}}
 @if ($menus->hasPages())
   <div class="mt-6">
     {{ $menus->links() }}

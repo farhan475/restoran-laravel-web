@@ -2,20 +2,17 @@
 
 @section('content')
 <div class="max-w-2xl mx-auto">
-  {{-- Header Form --}}
   <div class="mb-6">
     <h1 class="text-3xl font-bold text-white">{{ $menu->exists ? 'Edit Menu' : 'Tambah Menu Baru' }}</h1>
     <p class="text-sm text-neutral-400">Isi detail item menu di bawah ini.</p>
   </div>
 
-  {{-- Card Form --}}
   <div class="border border-neutral-800 bg-neutral-900/50 rounded-xl shadow-lg">
     <form method="post" action="{{ $menu->exists ? route('menu.update',$menu) : route('menu.store') }}">
       @csrf
       @if($menu->exists) @method('put') @endif
 
       <div class="p-6 space-y-5">
-        {{-- Input Nama Menu --}}
         <div>
           <label for="nama" class="block text-sm font-medium text-neutral-300">Nama Menu</label>
           <div class="mt-2">
@@ -26,7 +23,6 @@
           @error('nama') <p class="text-red-400 text-sm mt-2">{{ $message }}</p> @enderror
         </div>
 
-        {{-- Input Harga --}}
         <div>
           <label for="harga" class="block text-sm font-medium text-neutral-300">Harga</label>
           <div class="mt-2">
@@ -37,7 +33,6 @@
           @error('harga') <p class="text-red-400 text-sm mt-2">{{ $message }}</p> @enderror
         </div>
 
-        {{-- Input Status Aktif --}}
         <div>
           <label for="aktif" class="block text-sm font-medium text-neutral-300">Status</label>
           <div class="mt-2">

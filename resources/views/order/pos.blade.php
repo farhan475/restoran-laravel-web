@@ -10,7 +10,6 @@
 </div>
 
 <div class="grid lg:grid-cols-2 gap-6">
-  <!-- Daftar menu -->
   <div class="border border-neutral-800 bg-neutral-900/50 rounded-xl shadow-lg p-5">
     <h2 class="font-semibold text-white mb-4">Pilih Menu</h2>
     <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -24,7 +23,6 @@
     </div>
   </div>
 
-  <!-- Keranjang -->
   <div class="border border-neutral-800 bg-neutral-900/50 rounded-xl shadow-lg p-5 flex flex-col">
     <h2 class="font-semibold text-white mb-4">Keranjang</h2>
     <div class="overflow-y-auto flex-grow -mx-5 px-5">
@@ -37,7 +35,6 @@
           </tr>
         </thead>
         <tbody id="cart-body-js" class="text-neutral-300">
-            {{-- Konten keranjang diisi oleh JavaScript --}}
         </tbody>
       </table>
     </div>
@@ -59,7 +56,6 @@
 @endsection
 
 @push('scripts')
-{{-- Salin-tempel seluruh blok <script> dari kode lama Anda ke sini. Tidak ada yang perlu diubah di dalamnya. --}}
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const transaksiId = {{ $transaksiId }};
@@ -68,7 +64,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const totalElement = document.getElementById('total-js');
     const saveButton = document.getElementById('save-order-js');
 
-    let cart = []; // Keranjang lokal
+    let cart = []; 
 
     function renderCart() {
         cartBody.innerHTML = '';
@@ -102,13 +98,11 @@ document.addEventListener('DOMContentLoaded', function () {
         totalElement.textContent = `Rp ${grandTotal.toLocaleString('id-ID')}`;
     }
 
-    // (Sisa kode JavaScript lainnya sama persis, tidak perlu diubah)
     // ...
     menuButtons.forEach(btn => { /* ... */ });
     cartBody.addEventListener('click', function(event) { /* ... */ });
     saveButton.addEventListener('click', async () => { /* ... */ });
     
-    // Panggil event listener dari kode Anda yang sebelumnya
     menuButtons.forEach(btn => {
         btn.addEventListener('click', () => {
             const menuItem = {

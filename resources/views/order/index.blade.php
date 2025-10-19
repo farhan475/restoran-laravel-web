@@ -8,16 +8,14 @@
 
 <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-4">
   @foreach($mejas as $m)
-    {{-- Aturan Tampilan Kartu Meja --}}
     @php
       $isReserved = $m->status === 'reserved';
       $cardClasses = $isReserved
-          ? 'border-neutral-700 bg-neutral-900 cursor-not-allowed' // Gaya untuk meja 'reserved'
-          : 'border-neutral-800 bg-neutral-900 hover:border-blue-500 transition'; // Gaya untuk meja lain
+          ? 'border-neutral-700 bg-neutral-900 cursor-not-allowed'
+          : 'border-neutral-800 bg-neutral-900 hover:border-blue-500 transition';
       $textClasses = $isReserved ? 'text-neutral-500' : 'text-white';
     @endphp
     
-    {{-- Tampilkan div jika 'reserved', atau link <a> jika tidak --}}
     <{{ $isReserved ? 'div' : 'a' }}
         @if(!$isReserved) href="{{ route('order.pos', $m) }}" @endif
         class="rounded-xl p-4 text-center border {{ $cardClasses }}"
