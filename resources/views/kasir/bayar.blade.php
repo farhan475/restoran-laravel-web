@@ -4,7 +4,7 @@
 
 <div class="grid lg:grid-cols-2 gap-4">
   <div class="bg-white rounded-2xl shadow p-4">
-    <h2 class="font-semibold mb-2">Rincian</h2>
+    <h2 class="font-semibold mb-2">Rincian</h2> 
     <div class="overflow-x-auto">
       <table class="min-w-full text-sm">
         <thead class="bg-gray-100"><tr>
