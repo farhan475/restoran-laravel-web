@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Meja;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class MejaController extends Controller
 {
@@ -56,7 +57,19 @@ class MejaController extends Controller
 
     public function destroy(Meja $meja)
     {
+        // Cek apakah ada transaksi berstatus 'draft' yang menggunakan meja ini.
+        $isUsed = DB::table('transaksis')
+            ->where('meja_id', $meja->id)
+            ->where('status', 'draft')
+            ->exists();
+
+        if ($isUsed) {
+            // Jika ada, batalkan penghapusan dan beri pesan error.
+            return back()->withErrors(['gagal' => 'Gagal menghapus! Meja sedang digunakan dalam transaksi aktif.']);
+        }
+
+        // Jika tidak ada, lanjutkan proses penghapusan.
         $meja->delete();
-        return back()->with('ok', 'Meja dihapus');
+        return back()->with('ok', 'Meja berhasil dihapus.');
     }
 }

@@ -13,10 +13,13 @@
         @elseif($role==='kasir')
           <a href="{{ route('kasir.index') }}" class="px-4 py-2 rounded-lg bg-gray-900 text-white text-sm">Ke Kasir</a>
           <a href="{{ route('laporan.harian') }}" class="px-4 py-2 rounded-lg bg-gray-200 text-gray-900 text-sm">Laporan Harian</a>
-        @elseif(in_array($role,['administrator','owner']))
+        @elseif(in_array($role,['administrator']))
           <a href="{{ route('menu.index') }}" class="px-4 py-2 rounded-lg bg-gray-900 text-white text-sm">Kelola Menu</a>
           <a href="{{ route('meja.index') }}" class="px-4 py-2 rounded-lg bg-gray-200 text-gray-900 text-sm">Kelola Meja</a>
           <a href="{{ route('laporan.rekap') }}" class="px-4 py-2 rounded-lg bg-gray-200 text-gray-900 text-sm">Rekap</a>
+        @elseif($role==='owner') {{-- Tambahkan blok khusus untuk Owner --}}
+          <a href="{{ route('laporan.harian') }}" class="px-4 py-2 rounded-lg bg-gray-900 text-white text-sm">Laporan Harian</a>
+          <a href="{{ route('laporan.rekap') }}" class="px-4 py-2 rounded-lg bg-gray-200 text-gray-900 text-sm">Rekap Keseluruhan</a>
         @endif
       </div>
     </div>
@@ -141,7 +144,6 @@
       @break
 
     @case('administrator')
-    @case('owner')
       <div class="mt-6 grid lg:grid-cols-3 gap-4">
         <div class="bg-white rounded-2xl shadow p-5">
           <div class="flex items-center justify-between mb-3">
@@ -203,5 +205,17 @@
         </div>
       </div>
       @break
+       @case('owner') {{-- Tambahkan case khusus untuk Owner --}}
+    <div class="mt-6">
+        <div class="bg-white rounded-2xl shadow p-5">
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="font-semibold">Transaksi Selesai Terakhir</h2>
+            <a href="{{ route('laporan.rekap') }}" class="text-sm underline">Lihat rekap</a>
+          </div>
+          {{-- Panggil partial view yang sudah ada --}}
+          @include('dashboard._table_transaksi', ['items' => $recentPaid, 'empty_message' => 'Belum ada transaksi selesai hari ini.'])
+        </div>
+    </div>
+    @break
   @endswitch
   @endsection

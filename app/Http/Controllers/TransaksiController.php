@@ -9,6 +9,9 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Exports\LaporanHarianExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class TransaksiController extends Controller
 {
@@ -204,5 +207,61 @@ class TransaksiController extends Controller
             ->paginate(30);
 
         return view('laporan.rekap', compact('rows'));
+    }
+    public function exportLaporanHarian(Request $request)
+    {
+        $tanggal = $request->input('tanggal', today()->toDateString());
+        $fileName = 'laporan-harian-' . $tanggal . '.xlsx';
+
+        return Excel::download(new LaporanHarianExport($tanggal), $fileName);
+    }
+    // Di TransaksiController.php
+    public function printStruk(Transaksi $transaksi)
+    {
+        // Pastikan hanya transaksi yang sudah dibayar yang bisa dicetak
+        abort_unless($transaksi->status === 'bayar', 404);
+
+        $items = DB::table('pesanans as p')
+            ->join('menus as mn', 'mn.id', '=', 'p.menu_id')
+            ->where('p.transaksi_id', $transaksi->id)
+            ->select('mn.nama', 'p.jumlah', 'p.harga_satuan', 'p.subtotal')
+            ->get();
+
+        return view('kasir.struk', compact('transaksi', 'items'));
+    }
+    public function pdfLaporanHarian(Request $request)
+    {
+        // 1. Ambil tanggal dari request, jika tidak ada, gunakan hari ini
+        $tanggal = $request->input('tanggal', today()->toDateString());
+
+        // 2. Ambil data yang sama persis seperti di halaman laporan harian
+        $rows = DB::table('transaksis')
+            ->whereDate('created_at', $tanggal)
+            ->where('status', 'bayar')
+            ->get();
+
+        // 3. Muat view PDF dengan data tersebut
+        $pdf = PDF::loadView('laporan.harian_pdf', compact('rows', 'tanggal'));
+
+        // 4. Atur nama file dan mulai download
+        $fileName = 'laporan-harian-' . $tanggal . '.pdf';
+        return $pdf->download($fileName);
+    }
+    public function pdfRekap()
+    {
+        // 1. Ambil data yang sama persis seperti di halaman rekap
+        $rows = DB::table('transaksis')
+            ->selectRaw('DATE(created_at) tgl, COUNT(*) trx, SUM(total) omset')
+            ->where('status', 'bayar')
+            ->groupBy('tgl')
+            ->orderByDesc('tgl')
+            ->get(); // Gunakan get() bukan paginate() untuk PDF
+
+        // 2. Muat view PDF dengan data tersebut
+        $pdf = PDF::loadView('laporan.rekap_pdf', compact('rows'));
+
+        // 3. Atur nama file dan mulai download
+        $fileName = 'laporan-rekap-' . now()->format('Y-m-d') . '.pdf';
+        return $pdf->download($fileName);
     }
 }

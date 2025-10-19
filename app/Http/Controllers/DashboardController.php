@@ -49,11 +49,19 @@ class DashboardController extends Controller
                     ->orderByDesc('t.updated_at')->limit(5)->get();
                 break;
 
-            case 'administrator':
             case 'owner':
+                $recentPaid = DB::table('transaksis as t')
+                    ->join('mejas as m', 'm.id', '=', 't.meja_id')
+                    ->where('t.status', 'bayar')
+                    ->select('t.id', 'm.kode as meja', 't.total', 't.created_at')
+                    ->orderByDesc('t.updated_at')->limit(5)->get();
+                break;
+
+            case 'administrator':
+                // Semua query untuk admin tetap di sini
                 $jumlahMenu = Menu::where('aktif', true)->count();
                 $jumlahMeja = Meja::count();
-                $drafts = DB::table('transaksis')->where('status', 'draft')->get(); // Untuk .count() di view
+                $drafts = DB::table('transaksis')->where('status', 'draft')->get();
                 $recentPaid = DB::table('transaksis as t')
                     ->join('mejas as m', 'm.id', '=', 't.meja_id')
                     ->where('t.status', 'bayar')
@@ -61,13 +69,12 @@ class DashboardController extends Controller
                     ->orderByDesc('t.updated_at')->limit(5)->get();
                 $topMenus = DB::table('pesanans as p')
                     ->join('menus as m', 'p.menu_id', '=', 'm.id')
-                    ->selectRaw('m.nama, SUM(p.jumlah) as jml, SUM(p.subtotal) as omzet')
-                    ->groupBy('m.nama')
+                    ->selectRaw('m.nama as nama, SUM(p.jumlah) as jml, SUM(p.subtotal) as omzet')
+                    ->groupBy('m.nama') 
                     ->orderByDesc('jml')
                     ->limit(5)->get();
                 break;
         }
-
         // --- 4. Kirim Semua Data ke View Dashboard ---
         return view('dashboard', compact(
             'omsetHariIni',
