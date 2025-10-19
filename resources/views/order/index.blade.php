@@ -1,33 +1,33 @@
 @extends('layouts.app')
+
 @section('content')
-<h1 class="text-xl font-semibold mb-4">Pilih Meja</h1>
-<div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3">
+<div class="mb-6">
+  <h1 class="text-3xl font-bold text-white">Buat Order Baru</h1>
+  <p class="text-sm text-neutral-400">Pilih meja untuk memulai atau melanjutkan transaksi.</p>
+</div>
+
+<div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-4">
   @foreach($mejas as $m)
-    {{-- Jika statusnya 'reserved', buat elemennya tidak bisa diklik --}}
-    @if ($m->status === 'reserved')
-      <div class="rounded-2xl p-4 text-center shadow bg-gray-200 border cursor-not-allowed" title="Meja ini sedang di-reserve">
-        <p class="font-semibold text-gray-500">{{ $m->kode }}</p>
-        <p class="text-xs mt-1">
-          <span class="px-2 py-0.5 rounded bg-blue-100 text-blue-700">Reserved</span>
-        </p>
+    {{-- Aturan Tampilan Kartu Meja --}}
+    @php
+      $isReserved = $m->status === 'reserved';
+      $cardClasses = $isReserved
+          ? 'border-neutral-700 bg-neutral-900 cursor-not-allowed' // Gaya untuk meja 'reserved'
+          : 'border-neutral-800 bg-neutral-900 hover:border-blue-500 transition'; // Gaya untuk meja lain
+      $textClasses = $isReserved ? 'text-neutral-500' : 'text-white';
+    @endphp
+    
+    {{-- Tampilkan div jika 'reserved', atau link <a> jika tidak --}}
+    <{{ $isReserved ? 'div' : 'a' }}
+        @if(!$isReserved) href="{{ route('order.pos', $m) }}" @endif
+        class="rounded-xl p-4 text-center border {{ $cardClasses }}"
+        @if($isReserved) title="Meja ini sedang di-reserve" @endif
+    >
+      <p class="font-semibold text-lg {{ $textClasses }}">{{ $m->kode }}</p>
+      <div class="text-xs mt-2">
+        <x-status-badge :status="$m->status" />
       </div>
-    @else
-      {{-- Jika status lain, biarkan sebagai link yang bisa diklik --}}
-      <a href="{{ route('order.pos', $m) }}"
-         class="rounded-2xl p-4 text-center shadow bg-white border hover:border-gray-900 transition">
-        <p class="font-semibold">{{ $m->kode }}</p>
-        <p class="text-xs mt-1">
-          @php
-            $statusClasses = [
-              'kosong'    => 'bg-green-100 text-green-700',
-              'tersedia'  => 'bg-green-100 text-green-700',
-              'terpakai'  => 'bg-yellow-100 text-yellow-700',
-            ][$m->status] ?? 'bg-gray-100 text-gray-700';
-          @endphp
-          <span class="px-2 py-0.5 rounded {{ $statusClasses }}">{{ ucfirst($m->status) }}</span>
-        </p>
-      </a>
-    @endif
+    </{{ $isReserved ? 'div' : 'a' }}>
   @endforeach
 </div>
 @endsection

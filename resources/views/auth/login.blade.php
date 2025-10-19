@@ -1,22 +1,53 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-md mx-auto">
-  <div class="bg-white rounded-2xl shadow p-6">
-    <h1 class="text-xl font-semibold mb-4">Masuk</h1>
-    <form method="post" action="/login" class="space-y-4">
+<div class="max-w-md mx-auto mt-12">
+  <div class="border border-neutral-800 bg-neutral-900/50 rounded-xl shadow-lg p-8">
+    
+    {{-- Header Form --}}
+    <div class="text-center mb-8">
+      {{-- Anda bisa menaruh logo di sini jika mau --}}
+      <h1 class="text-2xl font-bold text-white">Selamat Datang Kembali</h1>
+      <p class="text-sm text-neutral-400">Silakan masuk untuk melanjutkan ke Restoran POS</p>
+    </div>
+
+    {{-- Form Login --}}
+    <form method="post" action="{{ route('login') }}" class="space-y-5">
       @csrf
+
+      {{-- Input Username --}}
       <div>
-        <label class="block text-sm">Username</label>
-        <input name="username" value="{{ old('username') }}" class="mt-1 w-full rounded-lg border p-2.5" autocomplete="username">
-        @error('username') <p class="text-red-600 text-sm mt-1">{{ $message }}</p> @enderror
+        <label for="username" class="block text-sm font-medium text-neutral-300">Username</label>
+        <div class="mt-2">
+          <input id="username" name="username" value="{{ old('username') }}" 
+                 class="w-full rounded-lg bg-neutral-800 border-neutral-700 p-3 text-white focus:ring-2 focus:ring-inset focus:ring-blue-500 transition" 
+                 autocomplete="username" required>
+        </div>
+        @error('username') <p class="text-red-400 text-sm mt-2">{{ $message }}</p> @enderror
       </div>
+
+      {{-- Input Password --}}
       <div>
-        <label class="block text-sm">Password</label>
-        <input type="password" name="password" class="mt-1 w-full rounded-lg border p-2.5" autocomplete="current-password">
-        @error('password') <p class="text-red-600 text-sm mt-1">{{ $message }}</p> @enderror
+        <label for="password" class="block text-sm font-medium text-neutral-300">Password</label>
+        <div class="mt-2">
+          <input id="password" type="password" name="password" 
+                 class="w-full rounded-lg bg-neutral-800 border-neutral-700 p-3 text-white focus:ring-2 focus:ring-inset focus:ring-blue-500 transition" 
+                 autocomplete="current-password" required>
+        </div>
+        @error('password') <p class="text-red-400 text-sm mt-2">{{ $message }}</p> @enderror
       </div>
-      <button class="w-full rounded-lg bg-gray-900 text-white py-2.5">Masuk</button>
+
+      {{-- Menampilkan error login umum (misal: "These credentials do not match...") --}}
+      @if ($errors->has('gagal'))
+        <p class="text-red-400 text-sm">{{ $errors->first('gagal') }}</p>
+      @endif
+
+      {{-- Tombol Submit --}}
+      <div class="pt-2">
+        <button type="submit" class="w-full rounded-lg bg-white hover:bg-neutral-200 text-black py-3 text-sm font-semibold transition">
+          Masuk
+        </button>
+      </div>
     </form>
   </div>
 </div>

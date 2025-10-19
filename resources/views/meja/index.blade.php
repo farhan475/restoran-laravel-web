@@ -1,73 +1,86 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
-  <h1 class="text-xl font-semibold">Meja</h1>
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+  <div>
+    <h1 class="text-3xl font-bold text-white">Kelola Meja</h1>
+    <p class="text-sm text-neutral-400">Tambah, edit, atau hapus data meja restoran.</p>
+  </div>
   <div class="flex gap-2">
-    <a href="{{ route('meja.create') }}" class="px-3 py-2 rounded-lg bg-gray-900 text-white text-sm">Tambah Meja</a>
+    <a href="{{ route('meja.create') }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white hover:bg-neutral-200 text-black text-sm font-semibold transition">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg>
+      <span>Tambah Meja</span>
+    </a>
   </div>
 </div>
 
-<div class="bg-white rounded-2xl shadow p-4 mb-3">
-  <form method="get" class="grid sm:grid-cols-3 gap-3">
+{{-- Card untuk Filter --}}
+<div class="border border-neutral-800 bg-neutral-900/50 rounded-xl shadow-lg p-4 mb-6">
+  <form method="get" class="grid sm:grid-cols-3 gap-4">
     <div>
       <input type="text" name="q" value="{{ request('q') }}"
              placeholder="Cari kode meja…"
-             class="w-full rounded-lg border p-2.5 text-sm">
+             class="w-full rounded-lg bg-neutral-800 border-neutral-700 p-2.5 text-sm text-white placeholder:text-neutral-500 focus:ring-2 focus:ring-blue-500 transition">
     </div>
     <div>
-      <select name="status" class="w-full rounded-lg border p-2.5 text-sm">
+      <select name="status" class="w-full rounded-lg bg-neutral-800 border-neutral-700 p-2.5 text-sm text-white focus:ring-2 focus:ring-blue-500 transition">
         <option value="">Semua status</option>
-        {{-- Menambahkan 'terpakai' ke dalam daftar filter status --}}
         @foreach(['kosong','tersedia','reserved', 'terpakai'] as $s)
           <option value="{{ $s }}" {{ request('status') === $s ? 'selected' : '' }}>
-            {{ ucfirst($s) }} {{-- Menggunakan ucfirst agar tampilan lebih rapi --}}
+            {{ ucfirst($s) }}
           </option>
         @endforeach
       </select>
     </div>
-    <div>
-      <button class="w-full sm:w-auto px-4 py-2.5 rounded-lg bg-gray-900 text-white text-sm">Filter</button>
+    <div class="flex items-center gap-2">
+      <button class="w-full sm:w-auto px-4 py-2.5 rounded-lg bg-white hover:bg-neutral-200 text-black text-sm font-semibold transition">Filter</button>
       @if(request()->hasAny(['q','status']))
-        <a href="{{ route('meja.index') }}" class="ml-2 text-sm underline">Reset</a>
+        <a href="{{ route('meja.index') }}" class="text-sm text-blue-400 hover:underline">Reset</a>
       @endif
     </div>
   </form>
 </div>
 
-<div class="overflow-x-auto bg-white rounded-2xl shadow">
-  <table class="min-w-full text-sm">
-    <thead class="bg-gray-100">
-      <tr>
-        <th class="text-left p-3">Kode</th>
-        <th class="text-left p-3">Status</th>
-        <th class="text-left p-3">Dibuat</th>
-        <th class="p-3"></th>
-      </tr>
-    </thead>
-    <tbody>
-      @forelse($mejas as $m)
-        <tr class="border-t">
-          <td class="p-3 font-medium">{{ $m->kode }}</td>
-          <td class="p-3">
-            {{-- Komponen ini akan menampilkan status secara dinamis, pastikan ia mendukung 'terpakai' --}}
-            <x-status-badge :status="$m->status" />
-          </td>
-          <td class="p-3">{{ $m->created_at?->format('d M Y H:i') }}</td>
-          <td class="p-3 text-right">
-            <a href="{{ route('meja.edit',$m) }}" class="text-blue-600">Edit</a>
-            <form method="post" action="{{ route('meja.destroy',$m) }}" class="inline" onsubmit="return confirm('Hapus meja {{ $m->kode }}?')">
-              @csrf @method('delete')
-              <button class="text-red-600 ml-3">Hapus</button>
-            </form>
-          </td>
+{{-- Card untuk Tabel --}}
+<div class="border border-neutral-800 bg-neutral-900/50 rounded-xl shadow-lg">
+  <div class="overflow-x-auto">
+    <table class="min-w-full text-sm">
+      <thead class="border-b border-neutral-700">
+        <tr class="text-neutral-400">
+          <th class="px-4 py-3 text-left font-semibold">Kode</th>
+          <th class="px-4 py-3 text-left font-semibold">Status</th>
+          <th class="px-4 py-3 text-left font-semibold">Dibuat</th>
+          <th class="px-4 py-3"></th>
         </tr>
-      @empty
-        <tr><td colspan="4" class="p-3 text-center text-gray-500">Belum ada data</td></tr>
-      @endforelse
-    </tbody>
-  </table>
+      </thead>
+      <tbody class="text-neutral-300">
+        @forelse($mejas as $m)
+          <tr class="border-b border-neutral-800 last:border-b-0">
+            <td class="px-4 py-3 font-semibold text-white">{{ $m->kode }}</td>
+            <td class="px-4 py-3">
+              <x-status-badge :status="$m->status" />
+            </td>
+            <td class="px-4 py-3">{{ $m->created_at?->diffForHumans() }}</td>
+            <td class="px-4 py-3 text-right whitespace-nowrap">
+              <a href="{{ route('meja.edit',$m) }}" class="font-semibold text-blue-400 hover:underline">Edit</a>
+              <form method="post" action="{{ route('meja.destroy',$m) }}" class="inline ml-4" onsubmit="return confirm('Hapus meja {{ $m->kode }}?')">
+                @csrf @method('delete')
+                <button class="font-semibold text-red-400 hover:underline">Hapus</button>
+              </form>
+            </td>
+          </tr>
+        @empty
+          <tr><td colspan="4" class="p-6 text-center text-neutral-500">Belum ada data meja.</td></tr>
+        @endforelse
+      </tbody>
+    </table>
+  </div>
 </div>
 
-<div class="mt-4">{{ $mejas->withQueryString()->links() }}</div>
+{{-- Paginasi dengan gaya baru --}}
+@if ($mejas->hasPages())
+  <div class="mt-6">
+    {{ $mejas->withQueryString()->links() }}
+  </div>
+@endif
 @endsection
